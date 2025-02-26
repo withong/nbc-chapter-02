@@ -11,7 +11,7 @@ public class Calculator {
 
         while (true) {
             System.out.println("-------------------------------------");
-            // 사용자 입력 값 받기 & exit 입력 시(null 반환됨) 종료
+            // 사용자 입력 값 받기 ( 숫자 → 연산자 → 숫자 )
             int number1 = getUserNumber(scanner, "첫 번째 숫자를 입력하세요: ");
             char operator = getUserOperator(scanner);
             int number2 = getUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
@@ -19,13 +19,13 @@ public class Calculator {
             // 계산하기
             int result = calculate(number1, number2, operator);
 
-            // 결과 메시지
+            // 결과 메시지 ( 부적절한 연산일 경우 값에 Error 출력 )
             String resultMessage = getResultMessage(number1, number2, operator, result);
 
             // 결과 출력
             System.out.println(resultMessage);
 
-            // 프로그램 종료 확인
+            // 종료 여부 확인
             if (isEnd(scanner)) {
                 System.out.println("------------- 계산기 종료 -------------");
                 break;
