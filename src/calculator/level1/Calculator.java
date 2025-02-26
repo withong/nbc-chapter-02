@@ -7,40 +7,37 @@ public class Calculator {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("--- 계산기 Version 1.0 [종료: exit] ---");
+        System.out.println("--------- 계산기 Version 1.0 ---------");
 
         while (true) {
-            // 사용자 입력 값 받기 & exit 입력 시 종료
-            Integer number1 = getUserNumber(scanner, "첫 번째 숫자를 입력하세요: ");
-            if (number1 == null) break; // 종료 확인
-
-            Character operator = getUserOperator(scanner);
-            if (operator == null) break; // 종료 확인
-
-            Integer number2 = getUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
-            if (number2 == null) break; // 종료 확인
+            System.out.println("-------------------------------------");
+            // 사용자 입력 값 받기 & exit 입력 시(null 반환됨) 종료
+            int number1 = getUserNumber(scanner, "첫 번째 숫자를 입력하세요: ");
+            char operator = getUserOperator(scanner);
+            int number2 = getUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
 
             // 계산하기
-            Integer result = calculate(number1, number2, operator);
+            int result = calculate(number1, number2, operator);
 
             // 결과 메시지
             String resultMessage = getResultMessage(number1, number2, operator, result);
 
             // 결과 출력
             System.out.println(resultMessage);
-        }
 
-        System.out.println("------------- 계산기 종료 -------------");
+            // 프로그램 종료 확인
+            if (isEnd(scanner)) {
+                System.out.println("------------- 계산기 종료 -------------");
+                break;
+            }
+        }
     }
 
-    public static Integer getUserNumber(Scanner scanner, String message) {
+    public static int getUserNumber(Scanner scanner, String message) {
         while (true) {
             System.out.print(message);
             // 엔터만 입력했을 때도 인지하기 위해 nextLine()으로 받음
             String userNumber = scanner.nextLine().trim();
-
-            // 종료 값 확인
-            if (isEnd(userNumber)) return null;
 
             // 입력 값이 빈 값인지 확인
             if (userNumber.isEmpty()) {
@@ -62,15 +59,12 @@ public class Calculator {
         }
     }
 
-    public static Character getUserOperator(Scanner scanner) {
+    public static char getUserOperator(Scanner scanner) {
         while (true) {
             System.out.print("사용할 연산자를 입력하세요: ");
 
             String userOperator = scanner.nextLine();
             String operators = "+-*/";
-
-            // 종료 값 확인
-            if (isEnd(userOperator)) return null;
 
             // 입력 값이 한 글자인지 확인
             boolean isLetter = userOperator.length() == 1;
@@ -86,7 +80,7 @@ public class Calculator {
         }
     }
 
-    public static Integer calculate(int number1, int number2, char operator) {
+    public static int calculate(int number1, int number2, char operator) {
         try {
             switch (operator) {
                 case '+':
@@ -98,21 +92,19 @@ public class Calculator {
                 case '/':
                     if (number2 == 0) {
                         handleError("divideByZeroError");
-                        return null;
                     }
                     return number1 / number2;
                 default:
                     handleError("invalidOperatorError");
-                    return null;
             }
         } catch (ArithmeticException e) {
             handleError("excessNumberError");
-            return null;
         }
+        return -9999;
     }
 
     public static void handleError(String error) {
-        String errorMessage = "Error: ";
+        String errorMessage = "[Error] ";
 
         switch (error) {
             case "divideByZeroError":
@@ -134,15 +126,18 @@ public class Calculator {
         System.out.println(errorMessage);
     }
 
-    public static boolean isEnd(String input) {
-        if (input.equals("exit")) {
+    public static boolean isEnd(Scanner scanner) {
+        System.out.print("종료하시겠습니까? [종료: exit] ");
+        String userEnd = scanner.nextLine();
+
+        if (userEnd.equals("exit")) {
             return true;
         }
         return false;
     }
 
-    public static String getResultMessage(int number1, int number2, char operator, Integer result) {
-        if (result == null) {
+    public static String getResultMessage(int number1, int number2, char operator, int result) {
+        if (result == -9999) {
             return "[ " + number1 + " " + operator + " " + number2 + " = Error ]\n-------------------------------------";
         }
         return "[ " + number1 + " " + operator + " " + number2 + " = " + result + " ]\n-------------------------------------";
