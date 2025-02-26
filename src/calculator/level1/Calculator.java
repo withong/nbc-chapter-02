@@ -12,13 +12,13 @@ public class Calculator {
         while (true) {
             // 사용자 입력 값 받기 & exit 입력 시 종료
             Integer number1 = getUserNumber(scanner, "첫 번째 숫자를 입력하세요: ");
-            if (number1 == null) break;
+            if (number1 == null) break; // 종료 확인
 
             Character operator = getUserOperator(scanner);
-            if (operator == null) break;
+            if (operator == null) break; // 종료 확인
 
             Integer number2 = getUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
-            if (number2 == null) break;
+            if (number2 == null) break; // 종료 확인
 
             // 계산하기
             Integer result = calculate(number1, number2, operator);
