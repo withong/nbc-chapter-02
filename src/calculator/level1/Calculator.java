@@ -11,19 +11,17 @@ public class Calculator {
 
         while (true) {
             System.out.println("-------------------------------------");
+
             // 사용자 입력 값 받기 ( 숫자 → 연산자 → 숫자 )
             int number1 = getUserNumber(scanner, "첫 번째 숫자를 입력하세요: ");
             char operator = getUserOperator(scanner);
             int number2 = getUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
 
-            // 계산하기
+            // 연산 수행
             int result = calculate(number1, number2, operator);
 
-            // 결과 메시지 ( 부적절한 연산일 경우 값에 Error 출력 )
-            String resultMessage = getResultMessage(number1, number2, operator, result);
-
-            // 결과 출력
-            System.out.println(resultMessage);
+            // 연산 결과 출력 ( 부적절한 연산일 경우 값에 Error 출력 )
+            printResultMessage(number1, number2, operator, result);
 
             // 종료 여부 확인
             if (isEnd(scanner)) {
@@ -92,6 +90,7 @@ public class Calculator {
                 case '/':
                     if (number2 == 0) {
                         handleError("divideByZeroError");
+                        return -9999;
                     }
                     return number1 / number2;
                 default:
@@ -111,7 +110,7 @@ public class Calculator {
                 errorMessage += "나눗셈 연산에서 분모가 0이 될 수 없습니다.";
                 break;
             case "invalidOperatorError":
-                errorMessage += "지원하지 않는 연산자입니다.";
+                errorMessage += "잘못된 입력이거나 지원하지 않는 연산자입니다.";
                 break;
             case "emptyInputError":
                 errorMessage += "값이 입력되지 않았습니다.";
@@ -127,7 +126,7 @@ public class Calculator {
     }
 
     public static boolean isEnd(Scanner scanner) {
-        System.out.print("종료하시겠습니까? [종료: exit] ");
+        System.out.print("[계속: enter][종료: exit 입력] ");
         String userEnd = scanner.nextLine();
 
         if (userEnd.equals("exit")) {
@@ -136,10 +135,13 @@ public class Calculator {
         return false;
     }
 
-    public static String getResultMessage(int number1, int number2, char operator, int result) {
+    public static void printResultMessage(int number1, int number2, char operator, int result) {
+        System.out.println("-------------------------------------");
         if (result == -9999) {
-            return "[ " + number1 + " " + operator + " " + number2 + " = Error ]\n-------------------------------------";
+            System.out.println("[ " + number1 + " " + operator + " " + number2 + " = Error ]");
+        } else {
+            System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + result + " ]");
         }
-        return "[ " + number1 + " " + operator + " " + number2 + " = " + result + " ]\n-------------------------------------";
+        System.out.println("-------------------------------------");
     }
 }
