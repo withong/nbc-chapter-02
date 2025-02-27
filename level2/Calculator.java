@@ -112,6 +112,7 @@ public class Calculator {
         DecimalFormat decimalFormat = new DecimalFormat("#.########"); // 불필요한 0 자동 제거
         String formatResult = decimalFormat.format(result);
 
+        // 현재 계산을 기록에 추가
         history.add(new CalculationRecord(number1, operator, number2, formatResult));
 
         System.out.println("-------------------------------------");
@@ -121,10 +122,16 @@ public class Calculator {
             System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + formatResult + " ]");
         }
         System.out.println("-------------------------------------");
+
+        // 목록은 10개까지 저장하므로 11개가 되면 가장 처음 저장한 기록 삭제
+        if (history.size() == 11) {
+            history.remove(0);
+        }
     }
 
     public void showHistory() {
         if (!isHistoryEmpty()) {
+
             System.out.println("-------------------------------------");
             for (int i = 0; i < history.size(); i++) {
                 System.out.println("[" + (i + 1) + "] " + history.get(i).toString());

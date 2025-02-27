@@ -12,11 +12,6 @@ public class App {
         System.out.println("--------- 계산기 Version 2.0 ---------");
 
         while (true) {
-            System.out.println("[1] 사칙연산 계산하기");
-            System.out.println("[2] 계산 기록 확인하기");
-            System.out.println("[3] 계산 기록 삭제하기");
-            System.out.println("[4] 종료하기");
-            System.out.print("실행할 메뉴 번호를 입력하세요: ");
 
             int userChoice = setUserChoice(scanner);
 
@@ -47,11 +42,21 @@ public class App {
     }
 
     public static int setUserChoice(Scanner scanner) {
-        String userNumber = scanner.nextLine().trim();
+        while (true) {
+            System.out.println("[1] 사칙연산 계산하기");
+            System.out.println("[2] 최근 계산 기록 조회하기");
+            System.out.println("[3] 계산 기록 삭제하기");
+            System.out.println("[4] 종료하기");
+            System.out.print("실행할 메뉴 번호를 입력하세요: ");
 
-        if (!userNumber.matches("^[1-4]$")) {
-            System.out.println("잘못된 입력입니다. 다시 입력하세요.");
+            String userNumber = scanner.nextLine().trim();
+
+            if (!userNumber.matches("^[1-4]$")) {
+                System.out.println("잘못된 입력입니다. 다시 입력하세요.");
+                System.out.println("-------------------------------------");
+                continue;
+            }
+            return Integer.parseInt(userNumber);
         }
-        return Integer.parseInt(userNumber);
     }
 }
