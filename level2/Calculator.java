@@ -2,7 +2,6 @@ package calculator.level2;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -147,7 +146,7 @@ public class Calculator {
             // 계산 기록의 번호 목록을 가져옴
             List<Integer> historynumbers = getHistoryNumbers();
             // 계산 기록의 마지막 번호를 가져옴
-            int forMatchNumber = historynumbers.get(historynumbers.size()-1);
+            int forMatchNumber = historynumbers.getLast();
 
 
             while (true) {
