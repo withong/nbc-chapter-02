@@ -1,46 +1,18 @@
 ### IntelliJ IDEA ###
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Mac OS ###
-.DS_Store
-
-### IDEA 관련 불필요한 파일 제외
 .idea/
 *.iml
 
-### 빌드 결과물 제외 (컴파일된 파일)
+### 빌드 결과물 ###
 out/
 target/
 build/
+bin/
+dist/
 
-### OS 관련 불필요한 파일 제외
-.DS_Store  # macOS
-Thumbs.db  # Windows
+### OS 관련 불필요한 파일 ###
+.DS_Store
+Thumbs.db
 
-### 기타 불필요한 파일
-*.log
+### 그 외 불필요한 파일 ###
 *.class
+*.log
