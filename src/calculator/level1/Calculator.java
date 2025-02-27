@@ -1,5 +1,6 @@
 package calculator.level1;
 
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class Calculator {
@@ -18,7 +19,7 @@ public class Calculator {
             int number2 = getUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
 
             // 연산 수행
-            int result = calculate(number1, number2, operator);
+            double result = calculate(number1, number2, operator);
 
             // 연산 결과 출력 ( 부적절한 연산일 경우 값에 Error 출력 )
             printResultMessage(number1, number2, operator, result);
@@ -78,7 +79,7 @@ public class Calculator {
         }
     }
 
-    public static int calculate(int number1, int number2, char operator) {
+    public static double calculate(int number1, int number2, char operator) {
         try {
             switch (operator) {
                 case '+':
@@ -92,7 +93,7 @@ public class Calculator {
                         handleError("divideByZeroError");
                         return -9999;
                     }
-                    return number1 / number2;
+                    return (double) number1 / number2;
                 default:
                     handleError("invalidOperatorError");
             }
@@ -126,21 +127,27 @@ public class Calculator {
     }
 
     public static boolean isEnd(Scanner scanner) {
-        System.out.print("[계속: enter][종료: exit 입력] ");
-        String userEnd = scanner.nextLine();
+        while (true) {
+            System.out.print("[계속: enter][종료: exit 입력] ");
+            String userEnd = scanner.nextLine().trim();
 
-        if (userEnd.equals("exit")) {
-            return true;
+            if (userEnd.equals("exit")) {
+                return true;
+            } else if (userEnd.isEmpty()) {
+                return false;
+            }
         }
-        return false;
     }
 
-    public static void printResultMessage(int number1, int number2, char operator, int result) {
+    public static void printResultMessage(int number1, int number2, char operator, double result) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.########"); // 불필요한 0 자동 제거
+        String formatResult = decimalFormat.format(result);
+
         System.out.println("-------------------------------------");
         if (result == -9999) {
             System.out.println("[ " + number1 + " " + operator + " " + number2 + " = Error ]");
         } else {
-            System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + result + " ]");
+            System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + formatResult + " ]");
         }
         System.out.println("-------------------------------------");
     }
