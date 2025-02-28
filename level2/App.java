@@ -16,13 +16,14 @@ public class App {
 
             switch (userChoice) {
                 case 1:
+                    System.out.println("-------------------------------------");
                     // 0 이상의 정수 2개와 연산자 입력받기
                     int number1 = calculator.setUserNumber(scanner, "첫 번째 숫자를 입력하세요: ");
                     char operator = calculator.setUserOperator(scanner);
                     int number2 = calculator.setUserNumber(scanner, "두 번째 숫자를 입력하세요: ");
 
                     // 입력받은 숫자와 연산자를 이용하여 계산
-                    double result = calculator.calculate(number1, number2, operator);
+                    String result = calculator.calculate(number1, number2, operator);
                     // 계산 목록에 현재 계산 기록 추가
                     calculator.updateRecords(number1, number2, operator, result);
                     // 마지막 계산 기록 조회

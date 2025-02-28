@@ -65,28 +65,28 @@ public class Calculator {
         }
     }
 
-    public double calculate(int number1, int number2, char operator) {
+    public String calculate(int number1, int number2, char operator) {
         try {
             switch (operator) {
                 case '+':
-                    return Math.addExact(number1, number2); // 계산 시 int 범위 초과 감지
+                    return String.valueOf(Math.addExact(number1, number2)); // 계산 시 int 범위 초과 감지
                 case '-':
-                    return Math.subtractExact(number1, number2); // 계산 시 int 범위 초과 감지
+                    return String.valueOf(Math.subtractExact(number1, number2)); // 계산 시 int 범위 초과 감지
                 case '*':
-                    return Math.multiplyExact(number1, number2); // 계산 시 int 범위 초과 감지
+                    return String.valueOf(Math.multiplyExact(number1, number2)); // 계산 시 int 범위 초과 감지
                 case '/':
                     if (number2 == 0) {
                         handleError("divideByZeroError");
-                        return Double.NaN; // 0으로 나누기 시도하면 NaN 반환
+                        return "정의되지 않음"; // 0으로 나누기 시도하면 NaN 반환
                     }
-                    return (double) number1 / number2;
+                    return String.valueOf((double) number1 / number2);
                 default:
                     handleError("invalidOperatorError");
-                    return Double.NaN; // 잘못된 입력 시 NaN 반환
+                    return "Error"; // 잘못된 입력 시 NaN 반환
             }
         } catch (ArithmeticException e) {
             handleError("excessNumberError");
-            return Double.NaN; // 연산 결과 int 범위 초과 시 NaN 반환
+            return "연산 범위 초과";
         }
     }
 
@@ -116,10 +116,18 @@ public class Calculator {
         System.out.println(errorMessage);
     }
 
-    public void updateRecords(int number1, int number2, char operator, double result) {
-        // 계산 결과 최대 소수점 8자리까지 반올림, 소수점 이하가 0일 경우 정수 형태
-        DecimalFormat decimalFormat = new DecimalFormat("#.########");
-        String formattedResult = decimalFormat.format(result);
+    public void updateRecords(int number1, int number2, char operator, String result) {
+        String formattedResult = "";
+        // 숫자가 아닌 경우 오류 메시지 그대로 저장
+        if (!result.matches("-?\\d+(\\.\\d+)?")) {
+            formattedResult = result;
+        } else {
+            // 입력 내용이 숫자인 경우 double로 변환
+            double StringToDouble = Double.parseDouble(result);
+            // 계산 결과 최대 소수점 8자리까지 반올림, 소수점 이하가 0일 경우 정수 형태
+            DecimalFormat decimalFormat = new DecimalFormat("#.########");
+            formattedResult = decimalFormat.format(StringToDouble);
+        }
 
         // 현재 계산을 기록에 추가
         records.add(new CalculationRecord(number1, operator, number2, formattedResult));
@@ -138,6 +146,7 @@ public class Calculator {
     public void showRecords() {
         if (records.isEmpty()) {
             System.out.println("조회할 기록이 없습니다.");
+            System.out.println("-------------------------------------");
             return;
         }
         // 최근 연산 기록 최대 10개까지 출력
@@ -162,6 +171,7 @@ public class Calculator {
     public void removeRecords(Scanner scanner) {
         if (records.isEmpty()) {
             System.out.println("삭제할 기록이 없습니다.");
+            System.out.println("-------------------------------------");
             return;
         }
 
@@ -192,7 +202,7 @@ public class Calculator {
 
                 // 목록 중에 있는 번호인지 확인
                 if (recordNumber < 1 || recordNumber > records.size()) {
-                    System.out.println("잘못된 입력입니다. 다시 입력하세요.");
+                    handleError("invalidRecordsNumberError");
                     continue;
                 }
 
@@ -209,7 +219,6 @@ public class Calculator {
             } catch (NumberFormatException e) {
                 // 숫자가 아닌 값 입력 시 오류 메시지 출력 후 재입력 요청
                 handleError("invalidRecordsNumberError");
-                System.out.println("-------------------------------------");
                 continue;
             }
         }
