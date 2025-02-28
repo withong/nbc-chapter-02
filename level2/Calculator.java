@@ -123,13 +123,14 @@ public class Calculator {
 
         // 현재 계산을 기록에 추가
         records.add(new CalculationRecord(number1, operator, number2, formattedResult));
+
         // 목록 관리 (10개 유지)
         trimRecords();
     }
 
     private void trimRecords() {
-        // 목록은 10개까지 저장하므로 11개가 되면 가장 처음 저장한 기록 삭제
-        if (records.size() == 11) {
+        // 목록은 10개까지 저장하므로 10개를 초과하면 가장 처음 저장한 기록 삭제
+        while (records.size() > 10) {
             records.remove(0);
         }
     }
