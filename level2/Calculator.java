@@ -6,11 +6,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Calculator {
-
-    private List<CalculationRecord> history;
+/*
+    이 'records' 필드는 private으로 감춰져 있습니다.
+    별도의 getRecords(), setRecords() 기능을 제공하지 않고,
+    showRecords(), showLastRecord(), removeRecords(), updateRecords() 메서드를 통해서만
+    기록을 조회/삭제/추가하도록 구현하여 캡슐화를 강화했습니다.
+*/
+    private List<CalculationRecord> records;
 
     public Calculator() {
-        history = new ArrayList<>();
+        records = new ArrayList<>();
     }
 
     public int setUserNumber(Scanner scanner, String message) {
@@ -55,7 +60,7 @@ public class Calculator {
             if (isOperator) {
                 return userOperator.charAt(0);
             }
-            // 연산자가 아닐 경우 오류 메시지 출력 후 재 입력받기
+            // 연산자가 아닐 경우 오류 메시지 출력 후 재 입력 요청
             handleError("invalidOperatorError");
         }
     }
@@ -64,24 +69,25 @@ public class Calculator {
         try {
             switch (operator) {
                 case '+':
-                    return Math.addExact(number1, number2); // int 범위 초과 감지
+                    return Math.addExact(number1, number2); // 계산 시 int 범위 초과 감지
                 case '-':
-                    return Math.subtractExact(number1, number2); // int 범위 초과 감지
+                    return Math.subtractExact(number1, number2); // 계산 시 int 범위 초과 감지
                 case '*':
-                    return Math.multiplyExact(number1, number2); // int 범위 초과 감지
+                    return Math.multiplyExact(number1, number2); // 계산 시 int 범위 초과 감지
                 case '/':
                     if (number2 == 0) {
                         handleError("divideByZeroError");
-                        return -9999;
+                        return Double.NaN; // 0으로 나누기 시도하면 NaN 반환
                     }
                     return (double) number1 / number2;
                 default:
                     handleError("invalidOperatorError");
+                    return Double.NaN; // 잘못된 입력 시 NaN 반환
             }
         } catch (ArithmeticException e) {
             handleError("excessNumberError");
+            return Double.NaN; // 연산 결과 int 범위 초과 시 NaN 반환
         }
-        return -9999;
     }
 
     private void handleError(String error) {
@@ -103,106 +109,108 @@ public class Calculator {
             case "decimalNumberError":
                 errorMessage += "0 이상의 정수만 입력할 수 있습니다.";
                 break;
+            case "invalidRecordsNumberError":
+                errorMessage += "잘못된 입력입니다. 올바른 번호를 입력하세요.";
+                break;
         }
         System.out.println(errorMessage);
     }
 
-    public void printResultMessage(int number1, int number2, char operator, double result) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.########"); // 불필요한 0 자동 제거
-        String formatResult = decimalFormat.format(result);
+    public void updateRecords(int number1, int number2, char operator, double result) {
+        // 계산 결과 최대 소수점 8자리까지 반올림, 소수점 이하가 0일 경우 정수 형태
+        DecimalFormat decimalFormat = new DecimalFormat("#.########");
+        String formattedResult = decimalFormat.format(result);
 
         // 현재 계산을 기록에 추가
-        history.add(new CalculationRecord(number1, operator, number2, formatResult));
+        records.add(new CalculationRecord(number1, operator, number2, formattedResult));
+        // 목록 관리 (10개 유지)
+        trimRecords();
+    }
 
-        System.out.println("-------------------------------------");
-        if (result == -9999) {
-            System.out.println("[ " + number1 + " " + operator + " " + number2 + " = Error ]");
-        } else {
-            System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + formatResult + " ]");
-        }
-        System.out.println("-------------------------------------");
-
+    private void trimRecords() {
         // 목록은 10개까지 저장하므로 11개가 되면 가장 처음 저장한 기록 삭제
-        if (history.size() == 11) {
-            history.remove(0);
+        if (records.size() == 11) {
+            records.remove(0);
         }
     }
 
-    public void showHistory() {
-        if (!isHistoryEmpty()) {
-
-            System.out.println("-------------------------------------");
-            for (int i = 0; i < history.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + history.get(i).toString());
-            }
-            System.out.println("-------------------------------------");
+    public void showRecords() {
+        if (records.isEmpty()) {
+            System.out.println("조회할 기록이 없습니다.");
+            return;
         }
+        // 최근 연산 기록 최대 10개까지 출력
+        System.out.println("-------------------------------------");
+        for (int i = 0; i < records.size(); i++) {
+            System.out.println("[" + (i + 1) + "] " + records.get(i).toString());
+        }
+        System.out.println("-------------------------------------");
     }
 
-    public void removeHistory(Scanner scanner) {
-        if (!isHistoryEmpty()) {
+    public void showLastRecord() {
+        if (records.isEmpty()) {
+            System.out.println("[Error] 계산 기록이 없습니다.");
+            return;
+        }
+        // 마지막 연산 기록 출력
+        System.out.println("-------------------------------------");
+        System.out.println(records.get(records.size()-1).toString());
+        System.out.println("-------------------------------------");
+    }
+
+    public void removeRecords(Scanner scanner) {
+        if (records.isEmpty()) {
+            System.out.println("삭제할 기록이 없습니다.");
+            return;
+        }
+
+        while (true) {
             // 목록 보여주기
-            showHistory();
-            // 계산 기록의 번호 목록을 가져옴
-            List<Integer> historynumbers = getHistoryNumbers();
-            // 계산 기록의 마지막 번호를 가져옴
-            int forMatchNumber = historynumbers.getLast();
+            showRecords();
 
+            System.out.println("삭제할 기록의 번호를 입력하세요.");
+            System.out.print("[취소: enter][전체: all 입력] ");
+            String userNumber = scanner.nextLine().trim();
 
-            while (true) {
-                System.out.println("삭제할 기록의 번호를 입력하세요.");
-                System.out.print("[취소: enter][전체: all 입력] ");
-                String userNumber = scanner.nextLine().trim();
+            // 빈 값 입력 시(취소) 초기 메뉴로 돌아감
+            if (userNumber.isEmpty()) {
+                System.out.println("-------------------------------------");
+                return;
+            }
 
-                if (userNumber.isEmpty()) {
-                    System.out.println("-------------------------------------");
-                    return;
-                }
+            // all 입력 시 전체 삭제
+            if (userNumber.equals("all")) {
+                records.clear();
+                System.out.println("계산 기록이 모두 삭제되었습니다.");
+                System.out.println("-------------------------------------");
+                return;
+            }
 
-                // all 입력 시 전체 삭제
-                if (userNumber.equals("all")) {
-                    history.clear();
-                    System.out.println("계산 기록이 모두 삭제되었습니다.");
-                    System.out.println("-------------------------------------");
-                    return;
-                }
-                // 번호 목록에 있는 숫자인지 확인
-                if (!userNumber.matches("^[1-"+forMatchNumber+"]$")) {
+            try { // 숫자로 변환 시도
+                int recordNumber = Integer.parseInt(userNumber);
+
+                // 목록 중에 있는 번호인지 확인
+                if (recordNumber < 1 || recordNumber > records.size()) {
                     System.out.println("잘못된 입력입니다. 다시 입력하세요.");
-                    System.out.println("-------------------------------------");
                     continue;
                 }
 
                 // 목록 중에 있는 번호면 인덱스로 변환
-                int historyIndex = Integer.parseInt(userNumber) - 1;
-                // 삭제
-                history.remove(historyIndex);
+                int recordsIndex = (recordNumber - 1);
+                // 기록 삭제
+                records.remove(recordsIndex);
                 // 삭제 결과 출력
                 System.out.println("계산 기록이 삭제되었습니다.");
                 System.out.println("-------------------------------------");
 
                 return;
+
+            } catch (NumberFormatException e) {
+                // 숫자가 아닌 값 입력 시 오류 메시지 출력 후 재입력 요청
+                handleError("invalidRecordsNumberError");
+                System.out.println("-------------------------------------");
+                continue;
             }
         }
-    }
-
-    private boolean isHistoryEmpty() {
-        if (history.isEmpty()) {
-            System.out.println("계산 기록이 없습니다.");
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private List<Integer> getHistoryNumbers() {
-        List<Integer> historyNumbers = new ArrayList<>();
-
-        if (!isHistoryEmpty()) {
-            for (int i = 0; i < history.size(); i++) {
-                historyNumbers.add(i + 1);
-            }
-        }
-        return historyNumbers;
     }
 }
