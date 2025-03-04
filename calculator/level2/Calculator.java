@@ -21,7 +21,7 @@ public class Calculator {
     public int setUserNumber(Scanner scanner, String message) {
         while (true) {
             System.out.print(message);
-            // 엔터만 입력했을 때도 인지하기 위해 nextLine()으로 받음
+            // 엔터만 입력했을 때도 인식하기 위해 nextLine()으로 받음
             String userNumber = scanner.nextLine().trim();
 
             // 입력 값이 빈 값인지 확인
@@ -69,20 +69,20 @@ public class Calculator {
         try {
             switch (operator) {
                 case '+':
-                    return String.valueOf(Math.addExact(number1, number2)); // 계산 시 int 범위 초과 감지
+                    return String.valueOf(Math.addExact(number1, number2)); // int 범위 초과 감지
                 case '-':
-                    return String.valueOf(Math.subtractExact(number1, number2)); // 계산 시 int 범위 초과 감지
+                    return String.valueOf(Math.subtractExact(number1, number2));
                 case '*':
-                    return String.valueOf(Math.multiplyExact(number1, number2)); // 계산 시 int 범위 초과 감지
+                    return String.valueOf(Math.multiplyExact(number1, number2));
                 case '/':
                     if (number2 == 0) {
                         handleError("divideByZeroError");
-                        return "정의되지 않음"; // 0으로 나누기 시도하면 NaN 반환
+                        return "정의되지 않음";
                     }
                     return String.valueOf((double) number1 / number2);
                 default:
                     handleError("invalidOperatorError");
-                    return "Error"; // 잘못된 입력 시 NaN 반환
+                    return "Error";
             }
         } catch (ArithmeticException e) {
             handleError("excessNumberError");
@@ -137,7 +137,7 @@ public class Calculator {
     }
 
     private void trimRecords() {
-        // 목록은 10개까지 저장하므로 10개를 초과하면 가장 처음 저장한 기록 삭제
+        // 목록은 10개까지 저장하므로 10개를 초과하면 가장 오래된 기록 삭제
         while (records.size() > 10) {
             records.remove(0);
         }
