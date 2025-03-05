@@ -3,6 +3,7 @@ package calculator.level3.model;
 import calculator.level3.exception.CalculatorException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public enum Operator {
     ADD("+") {
@@ -42,7 +43,7 @@ public enum Operator {
                 throw new CalculatorException(CalculatorException.Type.DIVISION_BY_ZERO);
             }
 
-            return num1.divide(num2);
+            return num1.divide(num2, 8, RoundingMode.HALF_UP);
         }
     };
 

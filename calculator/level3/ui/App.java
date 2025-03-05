@@ -1,10 +1,12 @@
 package calculator.level3.ui;
 
 import calculator.level3.exception.CalculatorException;
+import calculator.level3.model.CalculationRecord;
 import calculator.level3.model.Operand;
 import calculator.level3.model.Operator;
 import calculator.level3.service.ArithmeticCalculator;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -13,41 +15,83 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         InputValidator validator = new InputValidator(scanner);
         ArithmeticCalculator calculator = new ArithmeticCalculator();
+        List<CalculationRecord> records = calculator.getRecords();
+
+        System.out.println("--------- 계산기 Version 3.0 ---------");
 
         while (true) {
             try {
                 System.out.println("[1] 연산 수행하기");
-                System.out.println("[2] 최근 기록 조회하기");
+                System.out.println("[2] 연산 기록 조회하기");
                 System.out.println("[3] 연산 기록 삭제하기");
-                System.out.println("[4] 연산 결과 비교하기");
+                System.out.println("[4] 연산 결과 검색하기");
                 System.out.println("[5] 종료하기");
 
                 int input = validator.getValidInt();
 
                 switch (input) {
                     case 1 -> {
-                        Operand<?> number1 = validator.getValidNumber();
+                        System.out.println("-------------------------------------");
+                        Operand<?> number1 = validator.getValidNumber("* 첫 번째 숫자를 입력하세요: ");
                         Operator operator = validator.getValidOperator();
-                        Operand<?> number2 = validator.getValidNumber();
+                        Operand<?> number2 = validator.getValidNumber("* 두 번째 숫자를 입력하세요: ");
 
-                        Operand<?> result = calculator.calculate(number1, operator, number2);
-                        System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + result + " ]");
+                        Operand<?> calculated = calculator.calculate(number1, operator, number2);
+
+                        System.out.println("-------------------------------------");
+                        System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + calculated + " ]");
+                        System.out.println("-------------------------------------");
+
                         break;
                     }
                     case 2 -> {
-                        System.out.println("최근 기록 조회하기");
+                        if (records.isEmpty()) {
+                            System.out.println("*** 최근 연산 기록이 없습니다. ***");
+                            System.out.println("-------------------------------------");
+                            break;
+                        }
+
+                        System.out.println("-------------------------------------");
+                        for (int i = 0; i < records.size(); i++) {
+                            System.out.println("[" + (i + 1) + "] " + records.get(i).toString());
+                        }
+                        System.out.println("-------------------------------------");
+
                         break;
                     }
                     case 3 -> {
-                        System.out.println("연산 기록 삭제하기");
+                        validator.selectRecordToRemove(calculator);
                         break;
                     }
                     case 4 -> {
-                        System.out.println("연산 결과 비교하기");
+                        if (records.isEmpty()) {
+                            System.out.println("*** 검색할 연산 기록이 없습니다. ***");
+                            System.out.println("-------------------------------------");
+                            break;
+                        }
+
+                        List<CalculationRecord> filteredRecords = validator.selectRecordsWhere(calculator);
+
+                        if (filteredRecords == null) {
+                            break; // 취소
+                        }
+
+                        if (filteredRecords.isEmpty()) {
+                            System.out.println("*** 검색 결과가 없습니다. ***");
+                            System.out.println("-------------------------------------");
+                            break;
+                        }
+
+                        System.out.println("-------------------------------------");
+                        for (int i = 0; i < filteredRecords.size(); i++) {
+                            System.out.println("[" + (i + 1) + "] " + filteredRecords.get(i).toString());
+                        }
+                        System.out.println("-------------------------------------");
+
                         break;
                     }
                     case 5 -> {
-                        System.out.println("종료하기");
+                        System.out.println("------------- 계산기 종료 -------------");
                         return;
                     }
                     default -> {
@@ -58,5 +102,8 @@ public class App {
                 System.out.println(e.getMessage());
             }
         }
+
     }
+
+
 }

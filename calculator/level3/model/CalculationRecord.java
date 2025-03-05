@@ -7,7 +7,7 @@ public class CalculationRecord {
     private final Operator operator;
     private final Operand<?> result;
 
-    CalculationRecord(Operand<?> number1, Operator operator, Operand<?> number2, Operand<?> result) {
+    public CalculationRecord(Operand<?> number1, Operator operator, Operand<?> number2, Operand<?> result) {
         this.number1 = number1;
         this.operator = operator;
         this.number2 = number2;

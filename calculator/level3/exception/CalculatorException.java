@@ -16,10 +16,10 @@ public class CalculatorException extends RuntimeException {
     @Override
     public String getMessage() {
         return switch (type) {
-            case EMPTY_VALUE -> "입력된 값이 없습니다.";
-            case INVALID_NUMBER -> "유효하지 않은 숫자입니다.";
-            case INVALID_OPERATOR -> "유효하지 않은 연산자입니다";
-            case DIVISION_BY_ZERO -> "0으로 나눌 수 없습니다.";
+            case EMPTY_VALUE -> "*** 입력된 값이 없습니다. ***";
+            case INVALID_NUMBER -> "*** 유효하지 않은 숫자입니다. ***";
+            case INVALID_OPERATOR -> "*** 유효하지 않은 연산자입니다. ***";
+            case DIVISION_BY_ZERO -> "*** 0으로 나눌 수 없습니다. ***";
         };
     }
 }

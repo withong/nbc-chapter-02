@@ -22,15 +22,39 @@ public class ArithmeticCalculator {
     public Operand<?> calculate(Operand<?> number1, Operator operator, Operand<?> number2) {
         try {
             BigDecimal result = operator.apply(number1, number2);
-            return convertToResultType(result);
+
+            Operand<?> formatted = formatOperand(result);
+            updateRecord(number1, operator, number2, formatted);
+
+            return formatted;
 
         } catch (CalculatorException e) {
             System.out.println(e.getMessage());
-            return new Operand<>("정의되지 않음");
+
+            Operand<?> result = new Operand<>("정의되지 않음");
+            updateRecord(number1, operator, number2, result);
+
+            return result;
         }
     }
 
-    private Operand<?> convertToResultType(BigDecimal result) {
+    public List<CalculationRecord> getRecords() {
+        return records;
+    }
+
+    public void removeRecord(int index) {
+        records.remove(index);
+    }
+
+    public void clearRecords() {
+        records.clear();
+    }
+
+    private void updateRecord(Operand<?> number1, Operator operator, Operand<?> number2, Operand<?> result) {
+        records.add(new CalculationRecord(number1, operator, number2, result));
+    }
+
+    private Operand<?> formatOperand(BigDecimal result) {
         String toString = result.toString();
         BigDecimal bigDecimal = new BigDecimal(toString);
         bigDecimal = bigDecimal.setScale(8, RoundingMode.HALF_UP).stripTrailingZeros();
