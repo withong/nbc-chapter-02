@@ -55,9 +55,7 @@ public class ArithmeticCalculator {
     }
 
     private Operand<?> formatOperand(BigDecimal result) {
-        String toString = result.toString();
-        BigDecimal bigDecimal = new BigDecimal(toString);
-        bigDecimal = bigDecimal.setScale(8, RoundingMode.HALF_UP).stripTrailingZeros();
+        BigDecimal bigDecimal = result.setScale(8, RoundingMode.HALF_UP).stripTrailingZeros();
 
         // 과학적 표기법 적용 기준 확인
         boolean useScientificNotation = useScientificNotation(bigDecimal);
@@ -80,9 +78,9 @@ public class ArithmeticCalculator {
         String[] parts = plainString.split("\\.");
 
         int integerPartLength = parts[0].length();
-        int demicalPartLength = (parts.length > 1) ? parts[1].length() : 0;
+        int decimalPartLength = (parts.length > 1) ? parts[1].length() : 0;
 
         // 소수점 이상 10자리 or 소수점 이하 8자리 이상이면 과학적 표기법 적용
-        return integerPartLength >= 10 || demicalPartLength >= 8;
+        return integerPartLength >= 10 || decimalPartLength >= 8;
     }
 }

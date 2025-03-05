@@ -29,12 +29,12 @@ public class InputValidator {
                     throw new CalculatorException(CalculatorException.Type.EMPTY_VALUE);
                 }
 
-                if (!input.matches("\\d+")) {
+                try {
+                    return Integer.parseInt(input);
+
+                } catch (NumberFormatException e) {
                     throw new CalculatorException(CalculatorException.Type.INVALID_NUMBER);
                 }
-
-                return Integer.parseInt(input);
-
             } catch (CalculatorException e) {
                 System.out.println(e.getMessage());
             }

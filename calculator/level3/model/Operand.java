@@ -20,7 +20,12 @@ public class Operand<T> {
         if (operand instanceof BigDecimal bigDecimal) {
             return bigDecimal;
         }
-        throw new CalculatorException(CalculatorException.Type.INVALID_NUMBER);
+        try {
+            return new BigDecimal(operand.toString());
+
+        } catch (NumberFormatException e) {
+            throw new CalculatorException(CalculatorException.Type.INVALID_NUMBER);
+        }
     }
 
     @Override
