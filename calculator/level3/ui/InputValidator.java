@@ -208,7 +208,6 @@ public class InputValidator {
             } catch (CalculatorException e) {
                 // 숫자가 아닌 값 입력 시 오류 메시지 출력 후 재입력 요청
                 System.out.println(e.getMessage());
-                continue;
             }
         }
     }

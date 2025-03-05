@@ -41,8 +41,6 @@ public class App {
                         System.out.println("-------------------------------------");
                         System.out.println("[ " + number1 + " " + operator + " " + number2 + " = " + calculated + " ]");
                         System.out.println("-------------------------------------");
-
-                        break;
                     }
                     case 2 -> {
                         if (records.isEmpty()) {
@@ -56,12 +54,9 @@ public class App {
                             System.out.println("[" + (i + 1) + "] " + records.get(i).toString());
                         }
                         System.out.println("-------------------------------------");
-
-                        break;
                     }
                     case 3 -> {
                         validator.selectRecordToRemove(calculator);
-                        break;
                     }
                     case 4 -> {
                         if (records.isEmpty()) {
@@ -87,16 +82,12 @@ public class App {
                             System.out.println("[" + (i + 1) + "] " + filteredRecords.get(i).toString());
                         }
                         System.out.println("-------------------------------------");
-
-                        break;
                     }
                     case 5 -> {
                         System.out.println("------------- 계산기 종료 -------------");
                         return;
                     }
-                    default -> {
-                        throw new CalculatorException(CalculatorException.Type.INVALID_NUMBER);
-                    }
+                    default -> throw new CalculatorException(CalculatorException.Type.INVALID_NUMBER);
                 }
             } catch (CalculatorException e) {
                 System.out.println(e.getMessage());
