@@ -9,8 +9,8 @@ public enum Operator {
     ADD("+") {
         @Override
         public BigDecimal apply(Operand<?> number1, Operand<?> number2) {
-            BigDecimal num1 = (BigDecimal) number1.getOperand();
-            BigDecimal num2 = (BigDecimal) number2.getOperand();
+            BigDecimal num1 = number1.toBigDecimal();
+            BigDecimal num2 = number2.toBigDecimal();
 
             return num1.add(num2);
         }
@@ -18,8 +18,8 @@ public enum Operator {
     SUBTRACT("-") {
         @Override
         public BigDecimal apply(Operand<?> number1, Operand<?> number2) {
-            BigDecimal num1 = (BigDecimal) number1.getOperand();
-            BigDecimal num2 = (BigDecimal) number2.getOperand();
+            BigDecimal num1 = number1.toBigDecimal();
+            BigDecimal num2 = number2.toBigDecimal();
 
             return num1.subtract(num2);
         }
@@ -27,8 +27,8 @@ public enum Operator {
     MULTIPLY("*") {
         @Override
         public BigDecimal apply(Operand<?> number1, Operand<?> number2) {
-            BigDecimal num1 = (BigDecimal) number1.getOperand();
-            BigDecimal num2 = (BigDecimal) number2.getOperand();
+            BigDecimal num1 = number1.toBigDecimal();
+            BigDecimal num2 = number2.toBigDecimal();
 
             return num1.multiply(num2);
         }
@@ -36,8 +36,8 @@ public enum Operator {
     DIVIDE("/") {
         @Override
         public BigDecimal apply(Operand<?> number1, Operand<?> number2) {
-            BigDecimal num1 = (BigDecimal) number1.getOperand();
-            BigDecimal num2 = (BigDecimal) number2.getOperand();
+            BigDecimal num1 = number1.toBigDecimal();
+            BigDecimal num2 = number2.toBigDecimal();
 
             if (num2.signum() == 0) {
                 throw new CalculatorException(CalculatorException.Type.DIVISION_BY_ZERO);
