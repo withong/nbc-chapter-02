@@ -21,6 +21,7 @@ public class InputValidator {
     public int getValidInt() {
         while (true) {
             try {
+                System.out.println("-------------------------------------");
                 System.out.print("* 메뉴 번호를 입력하세요: ");
                 String input = scanner.nextLine().trim();
 
@@ -94,7 +95,7 @@ public class InputValidator {
             System.out.println("[1] 보다 큰 값 검색하기");
             System.out.println("[2] 보다 작은 값 검색하기");
             System.out.println("[3] 일치하는 값 검색하기");
-
+            System.out.println("-------------------------------------");
             System.out.print("* 메뉴 번호를 입력하세요. [취소: enter] ");
             String selectType = scanner.nextLine().trim();
 
@@ -104,9 +105,14 @@ public class InputValidator {
                 return null;
             }
 
-
+            int select;
             try {
-                int select = Integer.parseInt(selectType);
+                try { // 숫자로 변환 시도
+                    select = Integer.parseInt(selectType);
+
+                } catch (NumberFormatException e) {
+                    throw new CalculatorException(CalculatorException.Type.INVALID_NUMBER);
+                }
 
                 // 메뉴 중에 있는 번호인지 확인
                 try {
@@ -120,26 +126,22 @@ public class InputValidator {
 
                 Operand<?> reference = getValidNumber("* 기준 값을 입력하세요: ");
 
-                try {
-                    BigDecimal referenceValue = toBigDecimal(reference).stripTrailingZeros();
+                BigDecimal referenceValue = toBigDecimal(reference).stripTrailingZeros();
 
-                    List<CalculationRecord> filteredRecords = records.stream()
-                            .filter(record -> {
-                                BigDecimal resultValue = toBigDecimal(record.getResult()).stripTrailingZeros();
+                List<CalculationRecord> filteredRecords = records.stream()
+                        .filter(record -> {
+                            BigDecimal resultValue = toBigDecimal(record.getResult()).stripTrailingZeros();
 
-                                return switch (select) {
-                                    case 1 -> resultValue.compareTo(referenceValue) > 0; // 기준 값보다 큼
-                                    case 2 -> resultValue.compareTo(referenceValue) < 0; // 기준 값보다 작음
-                                    case 3 -> resultValue.compareTo(referenceValue) == 0; // 기준 값과 일치함
-                                    default -> false;
-                                };
-                            }).collect(Collectors.toList());
+                            return switch (select) {
+                                case 1 -> resultValue.compareTo(referenceValue) > 0; // 기준 값보다 큼
+                                case 2 -> resultValue.compareTo(referenceValue) < 0; // 기준 값보다 작음
+                                case 3 -> resultValue.compareTo(referenceValue) == 0; // 기준 값과 일치함
+                                default -> false;
+                            };
+                        }).collect(Collectors.toList());
 
-                    return filteredRecords;
+                return filteredRecords;
 
-                } catch (CalculatorException e) {
-                    System.out.println(e.getMessage());
-                }
             } catch (CalculatorException e) {
                 System.out.println(e.getMessage());
             }
@@ -151,7 +153,7 @@ public class InputValidator {
 
         while (true) {
             if (records.isEmpty()) {
-                System.out.println("*** 삭제할 연산 기록이 없습니다. ***");
+                System.out.println("***** 삭제할 연산 기록이 없습니다. *****");
                 System.out.println("-------------------------------------");
                 return;
             }
@@ -176,7 +178,7 @@ public class InputValidator {
             // all 입력 시 전체 삭제
             if (input.equals("all")) {
                 calculator.clearRecords();
-                System.out.println("*** 계산 기록이 모두 삭제되었습니다. ***");
+                System.out.println("***** 계산 기록이 모두 삭제되었습니다. *****");
                 System.out.println("-------------------------------------");
                 return;
             }
@@ -200,7 +202,7 @@ public class InputValidator {
                 // 기록 삭제
                 calculator.removeRecord(recordsIndex);
                 // 삭제 결과 출력
-                System.out.println("*** 계산 기록이 삭제되었습니다. ***");
+                System.out.println("***** 계산 기록이 삭제되었습니다. *****");
                 System.out.println("-------------------------------------");
 
                 return;

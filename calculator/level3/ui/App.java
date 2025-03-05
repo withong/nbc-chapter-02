@@ -21,21 +21,24 @@ public class App {
 
         while (true) {
             try {
-                System.out.println("[1] 연산 수행하기");
+                System.out.println("[1] 연산하기");
                 System.out.println("[2] 연산 기록 조회하기");
                 System.out.println("[3] 연산 기록 삭제하기");
                 System.out.println("[4] 연산 결과 검색하기");
                 System.out.println("[5] 종료하기");
 
+                // 메뉴 선택 - 입력 값 검증
                 int input = validator.getValidInt();
 
                 switch (input) {
                     case 1 -> {
                         System.out.println("-------------------------------------");
+                        // 숫자 2개, 연산자 입력받기 - 입력 값 검증
                         Operand<?> number1 = validator.getValidNumber("* 첫 번째 숫자를 입력하세요: ");
                         Operator operator = validator.getValidOperator();
                         Operand<?> number2 = validator.getValidNumber("* 두 번째 숫자를 입력하세요: ");
 
+                        // 연산 수행 결과
                         Operand<?> calculated = calculator.calculate(number1, operator, number2);
 
                         System.out.println("-------------------------------------");
@@ -44,7 +47,7 @@ public class App {
                     }
                     case 2 -> {
                         if (records.isEmpty()) {
-                            System.out.println("*** 최근 연산 기록이 없습니다. ***");
+                            System.out.println("***** 최근 연산 기록이 없습니다. *****");
                             System.out.println("-------------------------------------");
                             break;
                         }
@@ -60,7 +63,7 @@ public class App {
                     }
                     case 4 -> {
                         if (records.isEmpty()) {
-                            System.out.println("*** 검색할 연산 기록이 없습니다. ***");
+                            System.out.println("***** 검색할 연산 기록이 없습니다. *****");
                             System.out.println("-------------------------------------");
                             break;
                         }
@@ -72,7 +75,7 @@ public class App {
                         }
 
                         if (filteredRecords.isEmpty()) {
-                            System.out.println("*** 검색 결과가 없습니다. ***");
+                            System.out.println("***** 검색 결과가 없습니다. *****");
                             System.out.println("-------------------------------------");
                             break;
                         }
@@ -93,8 +96,5 @@ public class App {
                 System.out.println(e.getMessage());
             }
         }
-
     }
-
-
 }
