@@ -83,6 +83,7 @@ public class InputValidator {
 
             } catch (CalculatorException e) {
                 System.out.println(e.getMessage());
+                System.out.println("-------------------------------------");
             }
         }
     }
@@ -144,6 +145,7 @@ public class InputValidator {
 
             } catch (CalculatorException e) {
                 System.out.println(e.getMessage());
+                System.out.println("-------------------------------------");
             }
         }
     }

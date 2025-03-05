@@ -94,6 +94,7 @@ public class App {
                 }
             } catch (CalculatorException e) {
                 System.out.println(e.getMessage());
+                System.out.println("-------------------------------------");
             }
         }
     }
