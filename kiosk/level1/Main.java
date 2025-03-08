@@ -23,14 +23,8 @@ public class Main {
                 System.out.println((i + 1) + ". " + burgerName + "\t| " + burger.get(1) + " | " + burger.get(2));
             }
             System.out.println("0. 종료하기");
-            System.out.print("\n주문할 메뉴의 번호를 입력하세요: ");
-            String input = scanner.nextLine();
 
-            int user;
-            if (!isInteger(input)) {
-                continue;
-            }
-            user = Integer.parseInt(input);
+            int user = getInteger(scanner, "\n주문할 메뉴의 번호를 입력하세요: ");
 
             if (user < 0 || user > menu.size()) {
                 System.out.println("올바른 메뉴 번호를 입력하세요.");
@@ -44,51 +38,46 @@ public class Main {
 
             List<String> userChoice = menu.get(user-1);
             String userBurgerName = userChoice.get(0);
-            String userBugerPrice = userChoice.get(1);
+            String userBurgerPrice = userChoice.get(1);
 
-            System.out.println("\n[" + userBurgerName + "] " + userBugerPrice);
-            System.out.print("결제하시겠습니까? [예: 1, 아니오: 2] ");
-            input = scanner.nextLine();
+            System.out.println("\n[" + userBurgerName + "] " + userBurgerPrice);
+            user = getInteger(scanner, "결제하시겠습니까? [예: 1, 아니오: 2] ");
 
-            if (!isInteger(input)) {
-                continue;
-            }
-            user = Integer.parseInt(input);
+            switch (user) {
+                case 1 -> {
+                    user = getInteger(scanner, "\n지불할 금액을 입력하세요: ");
 
-            if (user == 2) {
-                continue;
-            } else if (user == 1) {
-                System.out.print("\n지불할 금액을 입력하세요: ");
-                input = scanner.nextLine();
+                    String numericPrice = userBurgerPrice.replace("￦", "").replace(",", "").trim();
+                    int price = Integer.parseInt(numericPrice);
 
-                if (!isInteger(input)) {
-                    continue;
-                }
-                user = Integer.parseInt(input);
+                    if (user > price) {
+                        System.out.println(String.format("\n[잔액] ￦ %,d", (user - price)));
 
-                String numericPrice = userBugerPrice.replace("￦", "").replace(",", "").trim();
-                int price = Integer.parseInt(numericPrice);
+                    } else if (user < price) {
+                        System.out.println("금액이 부족합니다. 결제가 취소됩니다.");
+                        break;
+                    }
 
-                if (user > price) {
-                    System.out.println(String.format("[잔액] ￦ %,d", (user - price)));
-                } else if (user < price) {
-                    System.out.println("금액이 부족합니다. 결제가 취소됩니다.");
-                    continue;
+                    System.out.println("결제가 완료되었습니다. 감사합니다.");
                 }
 
-                System.out.println("결제가 완료되었습니다. 감사합니다.");
+                case 2 -> System.out.println("결제가 취소되었습니다.");
+
+                default -> System.out.println("올바른 입력이 아닙니다. 결제가 취소됩니다.");
             }
         }
     }
 
-    public static boolean isInteger(String input) {
-        try {
-            Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            System.out.println("숫자만 입력 가능합니다.\n");
-            return false;
+    public static int getInteger(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine();
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("숫자만 입력 가능합니다.");
+            }
         }
-        return true;
     }
 
     // 메뉴 이름을 한글 기준으로 정렬 후 공백을 포함한 문자열을 반환하는 메서드
