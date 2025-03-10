@@ -19,14 +19,13 @@ public class Main {
                         new MenuItem("아메리카노", 3300, "바로 내린 100% 친환경 커피로 더 신선하게")
                 ),
                 new Menu("사이드").addMenuItems(
-                        new MenuItem("코카콜라", 2600, "갈증 해소뿐만이 아니라 기분까지 상쾌하게"),
-                        new MenuItem("스프라이트", 2600, "청량함에 레몬, 라임향을 더한 시원함"),
-                        new MenuItem("아메리카노", 3300, "바로 내린 100% 친환경 커피로 더 신선하게")
+                        new MenuItem("후렌치 후라이", 3000, "남다른 맛과 바삭함"),
+                        new MenuItem("코울슬로", 2700, "아삭하게 씹히는 샐러드"),
+                        new MenuItem("치즈스틱", 3600, "속이 꽉 찬 황금빛 바삭함")
                 )
         );
 
         Kiosk kiosk = new Kiosk(menu);
         kiosk.start();
     }
-
 }
