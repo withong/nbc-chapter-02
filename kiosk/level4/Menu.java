@@ -1,4 +1,4 @@
-package done;
+package level4;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,9 @@ public class Menu {
     }
 
     public Menu addMenuItems(MenuItem... menu) {
+        // 전달된 menu를 리스트로 변환하여 menuItems 리스트에 추가
         this.menuItems.addAll(Arrays.asList(menu));
+        // 현재 Menu 객체 반환
         return this;
     }
 }
