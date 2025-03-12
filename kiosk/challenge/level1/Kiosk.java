@@ -55,40 +55,58 @@ public class Kiosk {
                 }
             }
 
-            // 주문하기 메서드로 호출하여 주문 진행
-            order(userInput);
+            // 인덱스로 변환하여 주문하기 메서드 호출
+            order(userInput - 1);
         }
     }
 
-    private void order(int input) {
-        int index = input - 1;
-        Menu menu = menus.get(index);
-        List<MenuItem> menuItems = menu.getMenuItems();
+    private void order(int index) {
+        try {
+            while (true) {
+                Menu menu = menus.get(index);
+                List<MenuItem> menuItems = menu.getMenuItems();
 
-        while (true) {
-            // 메뉴 포맷팅 함수 사용하여 출력
-            System.out.println(getDisplayMenu(menu));
+                // 메뉴 포맷팅 함수 사용하여 출력
+                System.out.println(getDisplayMenu(menu));
 
-            // 사용자 입력 값 검증. -1 반환 시 재입력 요청
-            int userInput = getInteger();
-            if (userInput == -1) continue;
+                // 사용자 입력 값 검증. -1 반환 시 재입력 요청
+                int userInput = getInteger();
+                if (userInput == -1) continue;
 
-            // 0 입력 시 뒤로 가기 order() 종료 후 메인 메뉴로 돌아감
-            if (userInput == 0) {
-                break;
+                // 0 입력 시 뒤로 가기 order() 종료 후 메인 메뉴로 돌아감
+                if (userInput == 0) {
+                    break;
+                }
+
+                if (userInput == 112) { // p
+                    index = index - 1;
+                    continue;
+                } else if (userInput == 110) { // n
+                    index = index + 1;
+                    continue;
+                } else if (userInput == 99) { // c
+                    if (!cart.isEmpty()) {
+                        int result = cart();
+                        if (result == 0) break;
+                    } else {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
+                }
+
+                // 입력된 값이 메뉴 번호에 속한 숫자인지 확인
+                if (userInput < 0 || userInput > menuItems.size()) {
+                    System.out.println(" 올바른 메뉴 번호를 입력하세요.");
+                    continue;
+                }
+
+                // 유효한 입력 시 인덱스로 변환하여 해당 메뉴 아이템 가져옴
+                MenuItem menuItem = menuItems.get(userInput - 1);
+
+                // 장바구니에 추가
+                cart.addCartItem(menuItem);
             }
-
-            // 입력된 값이 메뉴 번호에 속한 숫자인지 확인
-            if (userInput < 0 || userInput > menuItems.size()) {
-                System.out.println(" 올바른 메뉴 번호를 입력하세요.");
-                continue;
-            }
-
-            // 유효한 입력 시 인덱스로 변환하여 해당 메뉴 아이템 가져옴
-            MenuItem menuItem = menuItems.get(userInput - 1);
-
-            // 장바구니에 추가
-            cart.addCartItem(menuItem);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(" 올바른 메뉴를 입력하세요.");
         }
     }
 
@@ -123,7 +141,7 @@ public class Kiosk {
                         continue;
                     }
 
-                    CartItem cartItem = cart.getCartItems().get(input-1);
+                    CartItem cartItem = cart.getCartItems().get(input - 1);
                     int quantity = cartItem.getQuantity();
 
                     if (quantity > 1) {
@@ -203,7 +221,11 @@ public class Kiosk {
         }
 
         try {
-            return Integer.parseInt(input);
+            if (input.equals("p") || input.equals("n") || input.equals("c")) {
+                return input.charAt(0);
+            } else {
+                return Integer.parseInt(input);
+            }
         } catch (NumberFormatException e) {
             System.out.println(" 유효한 입력이 아닙니다.");
             return -1;
@@ -216,7 +238,7 @@ public class Kiosk {
         List<MenuItem> menuItems = menu.getMenuItems();
         String category = menu.getCategory();
 
-        sb.append( "\n☰ 홈 > " + category + "\n");
+        sb.append("\n☰ 홈 > " + category + "\n");
 
         for (int i = 0; i < menuItems.size(); i++) {
             MenuItem item = menuItems.get(i);
@@ -225,7 +247,20 @@ public class Kiosk {
             String formatPrice = String.format("￦ %,d", item.getPrice());
             sb.append(" [" + (i + 1) + "] " + menuName + "\t|  " + formatPrice + "   |   " + item.getDesc() + "\n");
         }
-        sb.append(" [0] 뒤로 가기");
+        sb.append("\n [0] 홈으로");
+
+        int index = menus.indexOf(menu);
+
+        if (index == 0) {
+            sb.append("    [n] 다음 메뉴");
+        } else if (index == (menus.size() - 1)) {
+            sb.append("    [p] 이전 메뉴");
+        } else if (0 < index || index < (menus.size() - 1)) {
+            sb.append("    [p] 이전 메뉴    [n] 다음 메뉴");
+        }
+        if (!cart.isEmpty()) {
+            sb.append("    [c] 장바구니");
+        }
 
         return sb.toString();
     }
