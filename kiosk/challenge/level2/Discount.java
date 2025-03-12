@@ -15,7 +15,7 @@ public enum Discount {
     }
 
     public int getDiscounted(int price) {
-        return (int) (price - (price * rate));
+        return price - (int) (price * rate);
     }
 
     public String getName() {
