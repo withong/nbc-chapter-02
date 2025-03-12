@@ -78,19 +78,21 @@ public class Kiosk {
                     break;
                 }
 
-                if (userInput == 112) { // p
+                // 메뉴 네비게이션 바 입력 값 검사
+                if (userInput == 112) { // p 이전 메뉴
                     index = index - 1;
                     continue;
-                } else if (userInput == 110) { // n
+
+                } else if (userInput == 110) { // n 다음 메뉴
                     index = index + 1;
                     continue;
-                } else if (userInput == 99) { // c
-                    if (!cart.isEmpty()) {
-                        int result = cart();
-                        if (result == 0) break;
-                    } else {
+
+                } else if (userInput == 99) { // c 장바구니
+                    if (cart.isEmpty()) {
                         throw new ArrayIndexOutOfBoundsException();
                     }
+                    int result = cart();
+                    if (result == 0) break;
                 }
 
                 // 입력된 값이 메뉴 번호에 속한 숫자인지 확인
@@ -106,6 +108,7 @@ public class Kiosk {
                 cart.addCartItem(menuItem);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
+            // 메뉴 네비게이션 바 입력 값 예외 처리: 없는 인덱스거나, 빈 장바구니 호출 시 실행
             System.out.println(" 올바른 메뉴를 입력하세요.");
         }
     }
@@ -250,7 +253,7 @@ public class Kiosk {
         sb.append("\n [0] 홈으로");
 
         int index = menus.indexOf(menu);
-
+        // 메뉴 네비게이션 바 조건: 첫 번째 메뉴면 다음 메뉴만, 마지막 메뉴면 이전 메뉴만, 아니면 모두 출력
         if (index == 0) {
             sb.append("    [n] 다음 메뉴");
         } else if (index == (menus.size() - 1)) {
@@ -258,6 +261,7 @@ public class Kiosk {
         } else if (0 < index || index < (menus.size() - 1)) {
             sb.append("    [p] 이전 메뉴    [n] 다음 메뉴");
         }
+        // 장바구니가 비어 있지 않을 때만 네비게이션 바에 출력
         if (!cart.isEmpty()) {
             sb.append("    [c] 장바구니");
         }
