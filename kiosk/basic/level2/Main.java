@@ -1,18 +1,19 @@
-package level3;
+package basic.level2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Kiosk {
+public class Main {
 
-    private List<MenuItem> menuItems;
-
-    Kiosk(List<MenuItem> menuItems) {
-        this.menuItems = menuItems;
-    }
-
-    void start() {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(new MenuItem("불고기 버거", 4200, "불고기 소스에 패티와 마요네즈, 양상추의 맛있는 조합."));
+        menuItems.add(new MenuItem("치즈 버거", 3600, "맛있는 치즈와 100% 순 쇠고기 패티, 클래식 치즈 버거."));
+        menuItems.add(new MenuItem("슈비 버거", 6600, "탱글한 통새우살에 비프 패티를 더해 푸짐한 슈비 버거."));
+        menuItems.add(new MenuItem("슈슈 버거", 5500, "탱글한 통새우살이 가득한 슈슈 버거."));
 
         while (true) {
             System.out.println("\n[ MENU - BURGER ]");
@@ -38,34 +39,37 @@ public class Kiosk {
                 break;
             }
 
-            MenuItem userChoice = menuItems.get(userInput - 1);
+            MenuItem userChoice = menuItems.get(userInput-1);
             String userChoiceName = userChoice.getName();
             int userChoicePrice = userChoice.getPrice();
             String formatPrice = String.format("￦ %,d", userChoicePrice);
 
-            userInput = getInteger(scanner, "\n[" + userChoiceName + "] " + formatPrice + "\n결제하시겠습니까? [예: 1, 아니오: 2] ");
+            System.out.println("\n[" + userChoiceName + "] " + formatPrice);
+            userInput = getInteger(scanner, "결제하시겠습니까? [예: 1, 아니오: 2] ");
 
-            if (userInput == 1) {
-                int input = getInteger(scanner, "\n지불할 금액을 입력하세요: ");
+            switch (userInput) {
+                case 1 -> {
+                    userInput = getInteger(scanner, "\n지불할 금액을 입력하세요: ");
 
-                if (input > userChoicePrice) {
-                    System.out.println(String.format("\n[잔액] ￦ %,d", (input - userChoicePrice)));
+                    if (userInput > userChoicePrice) {
+                        System.out.println(String.format("\n[잔액] ￦ %,d", (userInput - userChoicePrice)));
 
-                } else if (input < userChoicePrice) {
-                    System.out.println("금액이 부족합니다. 결제가 취소됩니다.");
-                    continue;
+                    } else if (userInput < userChoicePrice) {
+                        System.out.println("금액이 부족합니다. 결제가 취소됩니다.");
+                        break;
+                    }
+
+                    System.out.println("결제가 완료되었습니다. 감사합니다.");
                 }
-                System.out.println("결제가 완료되었습니다. 감사합니다.");
 
-            } else if (userInput == 2) {
-                System.out.println("결제가 취소되었습니다.");
-            } else {
-                System.out.println("올바른 입력이 아닙니다. 결제가 취소됩니다.");
+                case 2 -> System.out.println("결제가 취소되었습니다.");
+
+                default -> System.out.println("올바른 입력이 아닙니다. 결제가 취소됩니다.");
             }
         }
     }
 
-    private static int getInteger(Scanner scanner, String prompt) {
+    public static int getInteger(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine();
@@ -78,7 +82,7 @@ public class Kiosk {
     }
 
     // 메뉴 이름을 한글 기준으로 정렬 후 공백을 포함한 문자열을 반환하는 메서드
-    private static String getDisplayBurgerName(List<MenuItem> menuItems, String menuName) {
+    public static String getDisplayBurgerName(List<MenuItem> menuItems, String menuName) {
         int maxLength = 0; // 최대 길이 계산
         for (MenuItem item : menuItems) {
             maxLength = Math.max(maxLength, getDisplayLength(item.getName()));
@@ -89,7 +93,7 @@ public class Kiosk {
     }
 
     // 한글을 2칸, 영어/숫자를 1칸으로 계산하는 메서드
-    private static int getDisplayLength(String text) {
+    public static int getDisplayLength(String text) {
         int length = 0;
         for (char c : text.toCharArray()) {
             if (Character.toString(c).matches("[가-힣]")) {
