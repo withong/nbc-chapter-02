@@ -314,6 +314,7 @@ public class Kiosk {
         String line ="--------------------------------------\n";
 
         String cartList = cartItems.stream()
+                .filter(item -> item.getQuantity() > 0)
                 .map(item -> String.format(" [%d] %s\t×  %d  =  ￦ %,d",
                         cartItems.indexOf(item) + 1,
                         getDisplayName(item.getMenuItem().getName()),
