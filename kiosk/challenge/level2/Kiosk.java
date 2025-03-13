@@ -1,6 +1,5 @@
 package challenge.level2;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -27,6 +26,7 @@ public class Kiosk {
                 System.out.println(" [" + (i + 1) + "] " + menus.get(i).getCategory());
             }
 
+            // 장바구니가 비어 있지 않으면 메뉴 목록에 추가
             if (!cart.isEmpty()) {
                 maxMenuNumber++;
                 System.out.println(" [" + maxMenuNumber + "] 장바구니");
@@ -51,6 +51,7 @@ public class Kiosk {
                 break;
             }
 
+            // 장바구니 메뉴 선택 시 cart() 호출, 0 반환 시 start() 처음으로
             if (!cart.isEmpty()) {
                 if (userInput == maxMenuNumber) {
                     int result = cart();
@@ -66,6 +67,7 @@ public class Kiosk {
     private void order(int index) {
         try {
             while (true) {
+                // 전달받은 인덱스로 해당 카테고리와 카테고리의 메뉴 목록 가져옴
                 Menu menu = menus.get(index);
                 List<MenuItem> menuItems = menu.getMenuItems();
 
@@ -76,7 +78,7 @@ public class Kiosk {
                 int userInput = getInteger();
                 if (userInput == -1) continue;
 
-                // 0 입력 시 뒤로 가기 order() 종료 후 메인 메뉴로 돌아감
+                // 0 입력 시 order() 종료, start()로 돌아감
                 if (userInput == 0) {
                     break;
                 }
@@ -95,7 +97,7 @@ public class Kiosk {
                         throw new ArrayIndexOutOfBoundsException();
                     }
                     int result = cart();
-                    if (result == 0) break;
+                    if (result == 0) break; // 0 반환 시 start()로 돌아감
                 }
 
                 // 입력된 값이 메뉴 번호에 속한 숫자인지 확인
@@ -123,6 +125,7 @@ public class Kiosk {
         }
 
         while (true) {
+            // 장바구니 목록 포맷팅하여 출력
             System.out.println(getDisplayCartItems());
             System.out.println("--------------------------------------");
             System.out.println(" [1] 결제하기");
@@ -133,32 +136,43 @@ public class Kiosk {
             int input = getInteger();
 
             switch (input) {
-                case 1 -> {
+                case 1 -> { // 결제하기 선택 시 할인 메서드 호출
                     int result = discount();
                     if (result == 0) return 0;
                 }
-                case 2 -> {
+                case 2 -> { // 삭제하기 선택 시 삭제할 메뉴 번호 입력받음, -1 반환 시 재입력 요청
                     System.out.println("\n 삭제할 메뉴의 번호를 입력하세요.");
                     input = getInteger();
+                    if (input == -1) continue;
 
                     int cartSize = cart.getCartItems().size();
+
+                    // 입력된 값이 메뉴 번호에 속해 있는 숫자인지 확인
                     if (input < 1 || input > cartSize) {
                         System.out.println(" 올바른 메뉴 번호를 입력하세요.");
                         continue;
                     }
 
+                    // 올바른 값이 입력되면 인덱스로 변환하여 선택된 메뉴의 정보 가져옴
                     CartItem cartItem = cart.getCartItems().get(input - 1);
+                    // 해당 메뉴의 수량 정보
                     int quantity = cartItem.getQuantity();
 
+                    // 수량이 1보다 크면 삭제할 수량 입력받음
                     if (quantity > 1) {
                         System.out.println("\n [" + cartItem.getMenuItem().getName() + "] 현재 수량 " + quantity + "개");
                         System.out.println(" 삭제할 수량을 입력하세요.");
-                        input = getInteger();
 
+                        input = getInteger();
+                        if (input == -1) continue;
+
+                        // 수량보다 큰 숫자 입력시 재입력 요청
                         if (input > quantity) {
                             System.out.println(" 수량보다 큰 숫자를 입력할 수 없습니다.");
                             continue;
                         }
+
+                        // 올바른 값 입력시 수량 세팅
                         cartItem.setQuantity(quantity - input);
 
                         // 수량이 0 이상인 경우만 리스트에 추가
@@ -173,10 +187,12 @@ public class Kiosk {
                     }
                 }
                 case 3 -> {
+                    // 장바구니 비우기 선택시 리스트를 비우고 0 반환
                     cart.clearCart();
                     return 0;
                 }
                 case 0 -> {
+                    // 홈으로 선택시 0 반환
                     return 0;
                 }
             }
@@ -185,9 +201,12 @@ public class Kiosk {
 
     private int discount() {
         while (true) {
+            // 장바구니에 들어 있는 메뉴들의 총 가격 정보
             int price = cart.getTotalPrice();
+            // 할인 정보 목록
             Discount[] discounts = Discount.values();
-            int lastNumber = Discount.values().length + 1; // 해당 없음
+            // 해당 없음을 포함한 마지막 메뉴 번호
+            int lastNumber = Discount.values().length + 1;
 
             // 할인 메뉴 출력
             System.out.println(getDisplayDiscount());
@@ -197,22 +216,28 @@ public class Kiosk {
             // -1 반환 시 재입력 요청
             if (input == -1) continue;
 
+            // 홈으로
             if (input == 0) {
                 System.out.println(" 결제가 취소되었습니다.");
                 return 0;
             }
 
+            // 메뉴에 속한 숫자인지 확인
             if (input < 1 || input > lastNumber) {
                 System.out.println(" 올바른 메뉴 번호를 입력하세요.");
                 continue;
             }
 
+            // 해당 없음 선택시 현재 가격 그대로 결제 메서드 호출
             if (input == lastNumber) {
                 pay(price);
             }
 
+            // 할인 대상이면 할인 적용한 가격 담아서 결제하기 호출
             int discountedPrice = discounts[input-1].getDiscounted(price);
             int result = pay(discountedPrice);
+
+            // 0 반환 시 0 반환, start()로 돌아감
             if (result == 0) return 0;
         }
     }
@@ -246,6 +271,7 @@ public class Kiosk {
                 System.out.println(String.format("\n [잔액] ￦ %,d", (input - price)));
             }
             System.out.println(" 결제가 완료되었습니다. 감사합니다.");
+            // 결제 완료 시 장바구니 비우기
             cart.clearCart();
 
             return 0;
@@ -262,7 +288,7 @@ public class Kiosk {
             return -1;
         }
 
-        try {
+        try { // 네비게이션 바 메뉴
             if (input.equals("p") || input.equals("n") || input.equals("c")) {
                 return input.charAt(0);
             } else {
@@ -354,12 +380,13 @@ public class Kiosk {
             List<MenuItem> menuItem = menu.getMenuItems();
 
             for (MenuItem item : menuItem) {
+                // 현재 있는 메뉴들 중 가장 긴 메뉴명의 길이 계산
                 maxLength = Math.max(maxLength, getDisplayLength(item.getName()));
             }
         }
 
         int paddingSize = maxLength - getDisplayLength(menuName); // 부족한 공백 개수 계산
-        return menuName + " ".repeat(paddingSize); // 버거명 + 공백 리턴
+        return menuName + " ".repeat(paddingSize); // 메뉴명 + 공백 리턴
     }
 
     // 한글을 2칸, 영어/숫자를 1칸으로 계산하는 메서드
