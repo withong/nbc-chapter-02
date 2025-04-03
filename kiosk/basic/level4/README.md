@@ -233,4 +233,4 @@
 <br>
 <hr>
 
-### 📎 **[[내일배움캠프] 키오스크 필수 Lv 4-5](https://withong.github.io/camp/task-kiosk-02/)**
+### 📎 **[[내일배움캠프] 키오스크 필수 Lv 4-5](https://withong.github.io/project/kiosk-02/)**

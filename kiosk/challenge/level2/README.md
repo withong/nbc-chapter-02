@@ -256,4 +256,4 @@
 <br>
 <hr>
 
-### 📎 **[[내일배움캠프] 키오스크 도전 Lv 2](https://withong.github.io/camp/task-kiosk-04/)**
+### 📎 **[[내일배움캠프] 키오스크 도전 Lv 2](https://withong.github.io/project/kiosk-04/)**
